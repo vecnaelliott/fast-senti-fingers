@@ -1,96 +1,537 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Fast Senti Fingers</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --neon: linear-gradient(90deg,#7c3aed,#db2777,#f59e0b,#22d3ee);
+    }
+
+    /* Small animations */
+    .fade-in { animation: fadeIn .35s ease-out both; }
+    @keyframes fadeIn { from {opacity:0;transform:translateY(6px)} to {opacity:1;transform:none} }
+    .flip { animation: flip .35s ease-in-out; }
+    @keyframes flip { from {transform:rotateX(90deg);opacity:0} to {transform:none;opacity:1} }
+
+    /* Button glow only on hover */
+    @keyframes glowPulse {
+      0%   { box-shadow: 0 0 0 0 rgba(124,58,237,.45), 0 0 18px rgba(34,211,238,.25); }
+      50%  { box-shadow: 0 0 22px 6px rgba(124,58,237,.35), 0 0 28px rgba(219,39,119,.25); }
+      100% { box-shadow: 0 0 0 0 rgba(124,58,237,.45), 0 0 18px rgba(34,211,238,.25); }
+    }
+    .glow-hover:hover { animation: glowPulse 1.6s ease-in-out infinite; }
+
+    /* Per-letter feedback */
+    .word span.char-correct { color:#16a34a } /* green */
+    .word span.char-wrong   { color:#dc2626 } /* red */
+
+    /* Neon text */
+    .neon {
+      background: var(--neon);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      filter: drop-shadow(0 0 12px rgba(124,58,237,.25));
+    }
+
+    .backdrop-blur-xl { backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-950 to-black text-slate-100 antialiased selection:bg-fuchsia-500/20">
+
+  <!-- Username Modal -->
+  <div id="usernameModal" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
+    <div class="relative w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-7 shadow-2xl fade-in">
+      <h3 class="text-lg font-semibold">Your X Username</h3>
+      <p class="text-sm text-slate-400 mt-1">Enter your handle to show your avatar in-game.</p>
+
+      <div class="mt-5">
+        <label for="handleInput" class="sr-only">X handle</label>
+        <input id="handleInput" type="text" inputmode="text" autocomplete="off" spellcheck="false"
+               placeholder="e.g. elliottyu"
+               class="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-fuchsia-500/60 focus:ring-4 focus:ring-fuchsia-500/10 outline-none px-4 py-3">
+      </div>
+
+      <div class="mt-5 flex items-center justify-between">
+        <div class="flex items-center gap-2 text-xs text-slate-400">
+          <span class="inline-block h-6 w-6 rounded-full bg-white/10 grid place-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6l4 2"/>
+            </svg>
+          </span>
+          60s typing challenge
+        </div>
+        <button id="startBtn"
+                class="glow-hover px-5 py-3 rounded-2xl font-semibold text-white transition active:scale-[.99]
+                       bg-[radial-gradient(100%_100%_at_0%_0%,#22d3ee_0,#7c3aed_40%,#db2777_80%)]">
+          Start
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+    <!-- Top Row -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 items-start mb-6">
+      <!-- Senti Profile -->
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3">
+          <img id="profileAvatar" src="" alt="Avatar" class="h-12 w-12 rounded-xl object-cover bg-white/10 border border-white/10">
+          <div class="min-w-0">
+            <div class="text-xs uppercase tracking-widest text-slate-400">Senti Profile</div>
+            <div id="profileHandle" class="font-semibold text-sm truncate">@unknown</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div class="hidden md:block text-center">
+        <h1 class="neon text-3xl lg:text-4xl font-extrabold tracking-tight">Fast Senti Fingers</h1>
+      </div>
+
+      <!-- Mode Switch -->
+      <div class="col-span-2 md:col-span-1 md:justify-self-end">
+        <div class="inline-flex rounded-2xl border border-white/10 bg-white/5 p-1">
+          <button id="btnTR" class="glow-hover px-4 py-2 text-sm rounded-xl font-medium transition">Türkçe</button>
+          <button id="btnEN" class="glow-hover px-4 py-2 text-sm rounded-xl font-medium transition">English</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Second Row: Title on small screens -->
+    <div class="md:hidden text-center mb-4">
+      <h1 class="neon text-3xl font-extrabold tracking-tight">Fast Senti Fingers</h1>
+    </div>
+
+    <!-- Stats Row -->
+    <section class="grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4 items-stretch mb-5">
+      <div class="col-span-2 sm:col-span-1 bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+        <div class="text-xs uppercase tracking-widest text-slate-400">Time</div>
+        <div id="time" class="text-3xl font-bold mt-1 flip">60</div>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+        <div class="text-xs uppercase tracking-widest text-slate-400">Score</div>
+        <div id="score" class="text-3xl font-bold mt-1">0</div>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+        <div class="text-xs uppercase tracking-widest text-slate-400">WPM</div>
+        <div id="wpm" class="text-3xl font-bold mt-1">0</div>
+      </div>
+      <div class="bg-white/5 border border-white/10 rounded-2xl p-4 text-center">
+        <div class="text-xs uppercase tracking-widest text-slate-400">Accuracy</div>
+        <div id="acc" class="text-3xl font-bold mt-1">100%</div>
+      </div>
+      <div class="flex items-center justify-center">
+        <button id="restartBtn" class="glow-hover w-full sm:w-auto px-5 py-3 rounded-2xl font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-[.99] transition">
+          New Game
+        </button>
+      </div>
+    </section>
+
+    <!-- Input -->
+    <section class="mb-4">
+      <input id="input" type="text" autocomplete="off" spellcheck="false"
+             placeholder="Click here and start typing… (Space/Enter to submit)"
+             class="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-blue-500/60 focus:ring-4 focus:ring-blue-500/10 outline-none px-5 py-4 text-lg placeholder:text-slate-500" />
+      <p class="text-xs text-slate-500 mt-2">Tip: Use <kbd class="px-1.5 py-0.5 bg-white/10 rounded">Space</kbd> or <kbd class="px-1.5 py-0.5 bg-white/10 rounded">Enter</kbd> to submit a word.</p>
+    </section>
+
+    <!-- Words (NO SCROLLING, fixed 10x8 window; equal spacing) -->
+    <section id="wordsWrap" class="rounded-2xl bg-white/5 border border-white/10 p-4 sm:p-6"
+             style="overflow:hidden; height:22rem;">
+      <div id="words"
+           class="grid justify-items-center gap-x-4 gap-y-3"
+           style="grid-template-columns: repeat(10,minmax(0,1fr)); grid-auto-rows: 2.4rem; font-size: clamp(12px, 0.8vw + 8px, 18px);">
+      </div>
+    </section>
+
+    <!-- Footer: center ticker + right credit, same baseline -->
+    <footer class="mt-8 grid grid-cols-3 items-center">
+      <div></div>
+      <div class="text-center text-slate-400 text-sm font-light">Ticker is $SENT</div>
+      <div class="flex justify-end">
+        <a href="https://x.com/cotantanax" target="_blank" rel="noopener noreferrer"
+           class="inline-flex items-center gap-2 rounded-xl px-3 py-2 border border-white/10 bg-white/5">
+          <span class="text-xs text-slate-400">Developed by</span>
+          <span class="font-bold px-2 py-1 rounded-md text-black" style="background:var(--neon);">Elliottyu</span>
+        </a>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Result Modal -->
+  <div id="resultModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-xl"></div>
+    <div class="relative w-full max-w-2xl rounded-3xl border border-white/10 bg-white/5 p-6 sm:p-8 shadow-2xl fade-in">
+      <div class="flex items-center gap-4 mb-5">
+        <img id="resultAvatar" src="" alt="Avatar" class="h-14 w-14 rounded-xl object-cover bg-white/10 border border-white/10">
+        <div>
+          <div class="text-xs uppercase tracking-widest text-slate-400">Player</div>
+          <div id="resultHandle" class="font-semibold">@unknown</div>
+        </div>
+        <div class="ml-auto text-right">
+          <div class="text-xs uppercase tracking-widest text-slate-400">Tier</div>
+          <div id="tierLabel" class="neon font-extrabold text-lg">Early AGI</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-black/30 rounded-xl p-4 text-center">
+          <div class="text-xs uppercase tracking-widest text-slate-400">Score</div>
+          <div id="rScore" class="text-2xl font-bold mt-1">0</div>
+        </div>
+        <div class="bg-black/30 rounded-xl p-4 text-center">
+          <div class="text-xs uppercase tracking-widest text-slate-400">WPM</div>
+          <div id="rWpm" class="text-2xl font-bold mt-1">0</div>
+        </div>
+        <div class="bg-black/30 rounded-xl p-4 text-center">
+          <div class="text-xs uppercase tracking-widest text-slate-400">Accuracy</div>
+          <div id="rAcc" class="text-2xl font-bold mt-1">0%</div>
+        </div>
+        <div class="bg-black/30 rounded-xl p-4 text-center">
+          <div class="text-xs uppercase tracking-widest text-slate-400">Best</div>
+          <div id="rBest" class="text-2xl font-bold mt-1">0 WPM</div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <button id="againBtn"
+                class="glow-hover px-5 py-3 rounded-2xl font-semibold text-white transition active:scale-[.99]
+                       bg-[radial-gradient(100%_100%_at_0%_0%,#22d3ee_0,#7c3aed_40%,#db2777_80%)]">
+          New Game
+        </button>
+
+        <a id="shareBtn" href="#" target="_blank" rel="noopener noreferrer"
+           class="glow-hover px-5 py-3 rounded-2xl font-semibold bg-gradient-to-r from-fuchsia-600 to-rose-600 hover:from-fuchsia-500 hover:to-rose-500 transition">
+          Share on X
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ============== WORD LISTS ==============
+    const WORDS_TR = `merhaba, oyun, klavye, hız, yazı, kelime, masa, bilgisayar, ekran, program, dosya, kitap, defter, kalem, kağıt, telefon, internet, bağlantı, sistem, işlemci, ekran, klavye, fare, yazılım, donanım, oyun, yarış, hızlı, yavaş, doğru, yanlış, puan, skor, süre, saniye, dakika, saat, gün, hafta, ay, yıl, öğrenci, öğretmen, okul, ders, sınav, soru, cevap, not, kütüphane, kitaplık, yazıhane, masaüstü, sandalye, pencere, kapı, duvar, tavan, zemin, ışık, lamba, elektrik, priz, kablo, şarj, batarya, güç, enerji, hız, hareket, durmak, başla, bitir, kazan, kaybet, başlık, içerik, paragraf, cümle, harf, rakam, sayı, tablo, grafik, resim, fotoğraf, video, ses, müzik, şarkı, film, dizi, oyuncu, sahne, ekran, sahil, deniz, göl, nehir, dağ, orman, ağaç, yaprak, çiçek, kuş, kedi, köpek, balık, hayvan, insan, çocuk, genç, yaşlı, kadın, erkek, aile, baba, anne, kardeş, arkadaş, dost, komşu, ev, oda, bahçe, balkon, mutfak, banyo, yatak, yastık, yorgan, çarşaf, perde, halı, kilim, çamaşır, bulaşık, yemek, su, ekmek, süt, kahve, çay, şeker, tuz, yağ, peynir, zeytin, bal, reçel, yumurta, et, tavuk, balık, sebze, meyve, elma, armut, üzüm, muz, çilek, karpuz, kavun, şeftali, kayısı, domates, biber, patlıcan, soğan, sarımsak, havuç, patates, marul, salatalık, limon, portakal, mandalina, nar, ceviz, fındık, badem, fıstık, tatlı, tuzlu, ekşi, acı, sıcak, soğuk, ılık, yağmur, kar, rüzgar, fırtına, gökyüzü, bulut, güneş, ay, yıldız, uzay, gezegen, dünya, hayat, ölüm, doğum, sağlık, hastalık, ilaç, doktor, hemşire, hasta, tedavi, ameliyat, hastane, klinik, eczane, oyun, spor, futbol, basketbol, voleybol, tenis, yüzme, koşu, bisiklet, araba, motor, yol, köprü, tünel, uçak, tren, gemi, otobüs, minibüs, taksi, trafik, durak, bilet, para, banka, cüzdan, kart, alışveriş, market, mağaza, fiyat, indirim, kampanya, hediye, kutu, paket, koli, posta, mektup, kargo, adres, şehir, köy, kasaba, ülke, dünya, bayrak, dil, tarih, sanat, müze, galeri, tiyatro, konser, festival, fuar, bilim, teknoloji, robot, yapay, zeka, makine, veri, bilgi, analiz, plan, proje, görev, amaç, hedef, başarı, başarısızlık, umut, hayal, gerçek, rüya, sevgi, aşk, mutluluk, üzüntü, korku, nefret, barış, savaş, özgürlük, adalet, hukuk, yasa, kural, ceza, suç, polis, asker, hükümet, devlet, millet, seçim, oy, parti`.split(/\s*,\s*/);
+
+    const WORDS_EN = `hello, game, keyboard, speed, typing, word, table, computer, screen, program, file, book, notebook, pen, paper, phone, internet, connection, system, processor, monitor, mouse, software, hardware, race, fast, slow, correct, wrong, point, score, time, second, minute, hour, day, week, month, year, student, teacher, school, lesson, exam, question, answer, grade, library, desktop, chair, window, door, wall, ceiling, floor, light, lamp, electric, socket, cable, charger, battery, power, energy, move, stop, start, finish, win, lose, title, content, paragraph, sentence, letter, number, digit, table, chart, picture, photo, video, sound, music, song, movie, series, actor, stage, beach, sea, lake, river, mountain, forest, tree, leaf, flower, bird, cat, dog, fish, animal, human, child, young, old, woman, man, family, father, mother, brother, sister, friend, neighbor, home, room, garden, balcony, kitchen, bathroom, bed, pillow, blanket, sheet, curtain, carpet, rug, laundry, dish, food, water, bread, milk, coffee, tea, sugar, salt, oil, cheese, olive, honey, jam, egg, meat, chicken, vegetable, fruit, apple, pear, grape, banana, strawberry, watermelon, melon, peach, apricot, tomato, pepper, eggplant, onion, garlic, carrot, potato, lettuce, cucumber, lemon, orange, tangerine, pomegranate, walnut, hazelnut, almond, peanut, sweet, salty, sour, bitter, hot, cold, warm, rain, snow, wind, storm, sky, cloud, sun, moon, star, space, planet, earth, life, death, birth, health, disease, medicine, doctor, nurse, patient, treatment, surgery, hospital, pharmacy, sport, football, basketball, volleyball, tennis, swimming, running, bicycle, car, motor, road, bridge, tunnel, plane, train, ship, bus, taxi, traffic, station, ticket, money, bank, wallet, card, shopping, market, store, price, discount, campaign, gift, box, package, post, letter, cargo, address, city, village, town, country, flag, language, history, art, museum, gallery, theater, concert, festival, fair, science, technology, robot, artificial, intelligence, machine, data, information, analysis, plan, project, mission, target, success, failure, hope, dream, reality, love, happiness, sadness, fear, hate, peace, war, freedom, justice, law, rule, crime, police, soldier, government, state, nation, election, vote, party`.split(/\s*,\s*/);
+
+    // ============== CONSTANTS ==============
+    const COLS = 10;          // yatayda 10 kelime
+    const ROWS = 8;           // 8 satır görünür
+    const WINDOW_SIZE = COLS * ROWS;
+
+    // ============== STATE ==============
+    const el = {
+      modal: document.getElementById('usernameModal'),
+      resultModal: document.getElementById('resultModal'),
+      handleInput: document.getElementById('handleInput'),
+      startBtn: document.getElementById('startBtn'),
+      restartBtn: document.getElementById('restartBtn'),
+      input: document.getElementById('input'),
+      words: document.getElementById('words'),
+      time: document.getElementById('time'),
+      score: document.getElementById('score'),
+      wpm: document.getElementById('wpm'),
+      acc: document.getElementById('acc'),
+      againBtn: document.getElementById('againBtn'),
+      shareBtn: document.getElementById('shareBtn'),
+      rScore: document.getElementById('rScore'),
+      rWpm: document.getElementById('rWpm'),
+      rAcc: document.getElementById('rAcc'),
+      rBest: document.getElementById('rBest'),
+      tier: document.getElementById('tierLabel'),
+      profileAvatar: document.getElementById('profileAvatar'),
+      profileHandle: document.getElementById('profileHandle'),
+      resultAvatar: document.getElementById('resultAvatar'),
+      resultHandle: document.getElementById('resultHandle'),
+      btnTR: document.getElementById('btnTR'),
+      btnEN: document.getElementById('btnEN'),
+      wordsWrap: document.getElementById('wordsWrap'),
+    };
+
+    let lang = 'EN';
+    let deck = [];
+    let status = []; // 'correct' | 'wrong' | null
+    let idx = 0;
+    let score = 0;
+    let mistakes = 0;
+    let started = false;
+    let finished = false;
+    let timeLeft = 60;
+    let timer = null;
+    let handle = '';
+
+    // ============== HELPERS ==============
+    const shuffle = a => {
+      const arr = [...a];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
+    function modeUI() {
+      el.btnTR.classList.remove('bg-white','text-black');
+      el.btnEN.classList.remove('bg-white','text-black');
+      (lang === 'TR' ? el.btnTR : el.btnEN).classList.add('bg-white','text-black');
+    }
+
+    function buildDeck() {
+      const src = lang === 'TR' ? WORDS_TR : WORDS_EN;
+      deck = shuffle(src).slice(0, 500); // geniş pencere için bol kelime
+      status = new Array(deck.length).fill(null);
+    }
+
+    function windowStart() {
+      return Math.floor(idx / COLS) * COLS;
+    }
+
+    function renderWindow() {
+      const start = windowStart();
+      const end = start + WINDOW_SIZE;
+      const visible = deck.slice(start, end);
+
+      el.words.innerHTML = '';
+      visible.forEach((w, i) => {
+        const realIndex = start + i;
+        const span = document.createElement('span');
+        span.className = 'word px-2 py-1 rounded whitespace-nowrap text-center';
+        span.dataset.index = realIndex;
+        span.textContent = w;
+
+        if (status[realIndex] === 'correct') {
+          span.classList.add('bg-emerald-600/30');
+        } else if (status[realIndex] === 'wrong') {
+          span.classList.add('bg-rose-600/30');
+        }
+        el.words.appendChild(span);
+      });
+
+      highlightActive();
+      el.wordsWrap.style.overflow = 'hidden'; // kesinlikle scroll yok
+    }
+
+    function highlightActive() {
+      const activeNode = el.words.querySelector(`.word[data-index="${idx}"]`);
+      const all = el.words.querySelectorAll('.word');
+      all.forEach(n => n.classList.remove('ring-2','ring-blue-500/40','bg-white/10'));
+      if (activeNode) {
+        activeNode.classList.add('bg-white/10','ring-2','ring-blue-500/40');
+      } else {
+        renderWindow();
+      }
+    }
+
+    function updateAccuracy() {
+      const total = score + mistakes;
+      const acc = total === 0 ? 100 : Math.max(0, Math.round((score / total) * 100));
+      el.acc.textContent = acc + '%';
+      return acc;
+    }
+
+    function startTimerOnce() {
+      if (started) return;
+      started = true;
+      timer = setInterval(() => {
+        timeLeft--;
+        el.time.textContent = timeLeft;
+        el.time.classList.add('flip');
+        setTimeout(() => el.time.classList.remove('flip'), 220);
+
+        const elapsed = 60 - timeLeft;
+        const currentWpm = elapsed > 0 ? Math.round((score / elapsed) * 60) : score;
+        el.wpm.textContent = String(currentWpm);
+
+        if (timeLeft <= 0) endGame();
+      }, 1000);
+    }
+
+    function paintLiveFeedback() {
+      const node = el.words.querySelector(`.word[data-index="${idx}"]`);
+      if (!node) return;
+      const target = deck[idx] || '';
+      const typed = el.input.value;
+
+      node.innerHTML = '';
+      for (let i = 0; i < target.length; i++) {
+        const s = document.createElement('span');
+        s.textContent = target[i];
+        if (i < typed.length) s.className = (typed[i] === target[i]) ? 'char-correct' : 'char-wrong';
+        node.appendChild(s);
+      }
+      if (typed.length > target.length) {
+        for (let j = target.length; j < typed.length; j++) {
+          const extra = document.createElement('span');
+          extra.textContent = typed[j] || '';
+          extra.className = 'char-wrong';
+          node.appendChild(extra);
+        }
+      }
+      node.classList.add('bg-white/10','ring-2','ring-blue-500/40','rounded','px-2','py-1');
+    }
+
+    function finalizeWord() {
+      if (finished) return;
+      const target = (deck[idx] || '').trim();
+      const typed  = el.input.value.trim();
+      if (!target) return;
+
+      const ok = typed === target;
+      status[idx] = ok ? 'correct' : 'wrong';
+      if (ok) {
+        score++;
+        el.score.textContent = String(score);
+      } else {
+        mistakes++;
+      }
+      updateAccuracy();
+
+      el.input.value = '';
+      const prevRow = Math.floor(idx / COLS);
+      idx++;
+
+      const newRow = Math.floor(idx / COLS);
+      if (newRow !== prevRow) {
+        renderWindow();
+      } else {
+        renderWindow();
+      }
+
+      if (!ok) {
+        el.input.classList.add('ring-2','ring-rose-500/40');
+        setTimeout(() => el.input.classList.remove('ring-2','ring-rose-500/40'), 200);
+      }
+    }
+
+    function tierFromScore(n) {
+      if (n >= 100) return 'Senti Dobby Fire!';
+      if (n >= 75)  return 'Sentient AGI';
+      if (n >= 50)  return 'Advanced AGI';
+      return 'Early AGI';
+    }
+
+    function endGame() {
+      if (finished) return;
+      finished = true;
+      clearInterval(timer);
+      el.input.disabled = true;
+
+      const elapsed = 60 - Math.max(timeLeft, 0);
+      const wpm = elapsed > 0 ? Math.round((score / elapsed) * 60) : score;
+      const acc = updateAccuracy();
+
+      const best = Number(localStorage.getItem('fsf_best_wpm') || 0);
+      const newBest = Math.max(best, wpm);
+      localStorage.setItem('fsf_best_wpm', String(newBest));
+
+      el.rScore.textContent = String(score);
+      el.rWpm.textContent = String(wpm);
+      el.rAcc.textContent = acc + '%';
+      el.rBest.textContent = newBest + ' WPM';
+      el.tier.textContent = tierFromScore(score);
+      el.resultHandle.textContent = '@' + (handle || 'unknown');
+      el.resultAvatar.src = avatarURL(handle);
+
+      const tweetText = encodeURIComponent(
+        "gSenti guys! I played @contantax 's Fast Senti Fingers game on his SentientVerse web app! Come on and join us! @SentientAGI"
+      );
+      el.shareBtn.href = `https://twitter.com/intent/tweet?text=${tweetText}`;
+
+      el.resultModal.classList.remove('hidden');
+      el.resultModal.classList.add('flex');
+    }
+
+    function resetGame() {
+      idx = 0; score = 0; mistakes = 0;
+      started = false; finished = false;
+      timeLeft = 60;
+      clearInterval(timer); timer = null;
+
+      el.time.textContent = '60';
+      el.score.textContent = '0';
+      el.wpm.textContent = '0';
+      el.acc.textContent = '100%';
+      el.input.value = '';
+      el.input.disabled = false;
+
+      buildDeck();
+      renderWindow();
+      el.input.focus({preventScroll:true});
+    }
+
+    // Avatar via Unavatar (provider = x)
+    function avatarURL(handle) {
+      const safe = (handle || '').replace(/^@/, '').trim() || 'unknown';
+      const fallback = encodeURIComponent(`https://source.boringavatars.com/beam/120/${safe}`);
+      return `https://unavatar.io/x/${safe}?fallback=${fallback}`;
+    }
+    function applyHandle(h) {
+      handle = h.replace(/^@/, '').trim();
+      el.profileHandle.textContent = '@' + (handle || 'unknown');
+      el.profileAvatar.src = avatarURL(handle);
+    }
+
+    // ============== EVENTS ==============
+    el.startBtn.addEventListener('click', () => {
+      applyHandle(el.handleInput.value || 'unknown');
+      el.modal.classList.add('hidden');
+      resetGame();
+    });
+
+    el.restartBtn.addEventListener('click', resetGame);
+
+    el.againBtn.addEventListener('click', () => {
+      el.resultModal.classList.add('hidden');
+      el.resultModal.classList.remove('flex');
+      resetGame();
+    });
+
+    el.btnTR.addEventListener('click', () => { lang = 'TR'; modeUI(); resetGame(); });
+    el.btnEN.addEventListener('click', () => { lang = 'EN'; modeUI(); resetGame(); });
+    modeUI();
+
+    el.input.addEventListener('input', () => {
+      if (finished) return;
+      startTimerOnce();
+      paintLiveFeedback();
+
+      const target = deck[idx] || '';
+      const typed = el.input.value;
+      if (!target.startsWith(typed) && typed.length > 0) {
+        el.input.classList.add('ring-2','ring-rose-500/40');
+      } else {
+        el.input.classList.remove('ring-2','ring-rose-500/40');
+      }
+    });
+
+    el.input.addEventListener('keydown', (e) => {
+      if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        if (el.input.value.length === 0) return;
+        finalizeWord();
+      }
+    });
+
+    // Prefill handle from localStorage (optional)
+    try {
+      const saved = localStorage.getItem('fsf_last_handle');
+      if (saved) document.getElementById('handleInput').value = saved;
+    } catch {}
+    document.getElementById('handleInput').addEventListener('change', (e) => {
+      try { localStorage.setItem('fsf_last_handle', e.target.value || ''); } catch {}
+    });
+
+    // Initial render
+    buildDeck();
+    renderWindow();
+  </script>
+</body>
 </html>
